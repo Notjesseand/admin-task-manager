@@ -54,7 +54,7 @@ export default function SubmitTicket() {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 font-montserrat">
+    <div className="max-w-xl mx-auto mt-10 font-montserrat text-sm">
       <h1 className="text-2xl font-bold mb-4">Submit a Ticket</h1>
       {success && <p className="text-green-600 mb-3">{success}</p>}
       <input
