@@ -19,8 +19,8 @@ const Page = () => {
   };
 
   const usernames = [
-    "it_admin",
     "tech_admin",
+    "it_admin",
     "academic_admin",
     "finance_admin",
   ];
