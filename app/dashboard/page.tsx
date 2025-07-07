@@ -187,12 +187,6 @@ export default function Dashboard() {
         {!tickets || tickets.length === 0 ? (
           <div className="text-center text-gray-400 py-12">
             <p className="text-sm">No tickets assigned yet.</p>
-            {/* <Link
-              href="/submit"
-              className="mt-4 inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors duration-200 "
-            >
-              Create a New Ticket
-            </Link> */}
           </div>
         ) : (
           <ul className="space-y-6">

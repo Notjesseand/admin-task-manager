@@ -110,6 +110,7 @@ const Page = () => {
           <div className="mt-8 text-center">
             <Link
               href="/dashboard"
+              target="_blank"
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors duration-200 font-medium"
             >
               Go to Dashboard
