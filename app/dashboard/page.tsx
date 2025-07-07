@@ -235,7 +235,7 @@ export default function Dashboard() {
                   </p>
                   {ticket.status !== "resolved" && (
                     <button
-                      className="w-full max-w-[550px] mx-auto justify-center flex px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors duration-200 font-medium"
+                      className="w-full mx-auto justify-center flex px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors duration-200 font-medium"
                       onClick={() => handleResolve(ticket.id)}
                     >
                       Mark as Resolved
