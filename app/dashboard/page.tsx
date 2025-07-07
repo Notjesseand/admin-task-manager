@@ -172,7 +172,7 @@ export default function Dashboard() {
               href="/login"
               className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 text-sm font-medium"
             >
-              Switch Account
+              Switch Account/sign out
             </Link>
             <Link
               href="/submit"
