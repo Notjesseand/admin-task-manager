@@ -40,8 +40,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100 font-montserrat text-sm">
-      <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
+    <div className="flex items-center justify-center h-screen bg-gray-100 font-montserrat text-sm px-4 overflow-x-hidden">
+      <div className="bg-white p-6 rounded shadow-md w-full max-w-md ">
         <h1 className="text-xl font-bold mb-4">Admin Login</h1>
         {error && <p className="text-red-500 mb-2">{error}</p>}
         <input
