@@ -1,13 +1,16 @@
+/* Star Background */
 .stars {
   position: fixed;
   top: 0;
   left: 0;
-  width: 1px;
-  height: 1px;
+  width: 100%;
+  height: 100%;
   background: transparent;
-  pointer-events: none; /* Optional: ensures stars don't block clicks */
+  pointer-events: none;
+  overflow: hidden;
 }
 
+/* Small stars: faster movement, smaller size */
 .stars.small {
   box-shadow: 789px 1415px #fff, 81px 845px #fff, 992px 999px #fff,
     886px 53px #fff, 1992px 1355px #fff, 1640px 663px #fff, 1330px 578px #fff,
@@ -76,12 +79,13 @@
     1604px 1316px #fff, 1177px 1013px #fff, 58px 1713px #fff, 1100px 720px #fff,
     777px 1541px #fff, 1591px 1133px #fff, 231px 1355px #fff, 1810px 210px #fff,
     1061px 894px #fff, 1177px 982px #fff;
-  animation: floatUp 50s linear infinite; /* Slowest for large stars */
+  animation: flowStars 30s linear infinite;
+  width: 1px;
+  height: 1px;
 }
 
+/* Medium stars: medium speed, slightly larger */
 .stars.medium {
-  width: 2px;
-  height: 2px;
   box-shadow: 1667px 1823px #fff, 992px 1093px #fff, 1820px 1270px #fff,
     970px 855px #fff, 1009px 1521px #fff, 1857px 186px #fff, 1148px 1200px #fff,
     1149px 792px #fff, 1627px 271px #fff, 352px 1337px #fff, 1457px 600px #fff,
@@ -183,12 +187,13 @@
     1571px 422px #fff, 1161px 1713px #fff, 1027px 876px #fff, 1446px 18px #fff,
     1979px 1700px #fff, 656px 1202px #fff, 1418px 1342px #fff, 303px 105px #fff,
     57px 144px #fff, 875px 1959px #fff, 1343px 505px #fff;
-  animation: floatUp 60s linear infinite; /* Slowest for large stars */
+  animation: flowStars 40s linear infinite;
+  width: 2px;
+  height: 2px;
 }
 
+/* Large stars: slowest, largest */
 .stars.large {
-  width: 3px;
-  height: 3px;
   box-shadow: 1433px 235px #fff, 367px 1908px #fff, 1702px 1135px #fff,
     1041px 955px #fff, 840px 1270px #fff, 616px 316px #fff, 368px 117px #fff,
     197px 1707px #fff, 1727px 346px #fff, 1871px 971px #fff, 1099px 1987px #fff,
@@ -227,14 +232,17 @@
     1px 76px #fff, 1994px 229px #fff, 560px 888px #fff, 668px 1517px #fff,
     379px 974px #fff, 1258px 693px #fff, 1939px 1731px #fff, 612px 433px #fff,
     1810px 814px #fff, 687px 1730px #fff, 1582px 14px #fff, 1118px 542px #fff;
-  animation: floatUp 70s linear infinite; /* Slowest for large stars */
+  animation: flowStars 50s linear infinite;
+  width: 3px;
+  height: 3px;
 }
 
-@keyframes floatUp {
+/* Keyframes for infinite star flow */
+@keyframes flowStars {
   0% {
-    transform: translateY(0);
+    transform: translateY(100vh); /* Start at the bottom */
   }
   100% {
-    transform: translateY(100vh); /* Move stars upwards */
+    transform: translateY(-100vh); /* Move to the top */
   }
 }

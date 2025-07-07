@@ -1,263 +1,3 @@
-// "use client";
-
-// // Import React hooks for state management and side effects
-// import { useEffect, useState } from "react";
-// import "@/styles/star-background.css";
-// import { TiTick } from "react-icons/ti";
-// import { GiCheckMark } from "react-icons/gi";
-// import Link from "next/link";
-// import { Loader2 } from "lucide-react";
-// import { MdDelete } from "react-icons/md";
-
-// // Interface for ticket data structure
-// type Ticket = {
-//   id: number;
-//   title: string;
-//   description: string;
-//   category: string;
-//   status: string;
-// };
-
-// // Main Dashboard component
-// export default function Dashboard() {
-//   // State for storing tickets, loading status, and error messages
-//   const [tickets, setTickets] = useState<Ticket[] | null>(null);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState<string | null>(null);
-//   const [deleting, setDeleting] = useState(false);
-
-//   // Function to handle ticket resolution
-//   const handleResolve = async (ticketId: number) => {
-//     const token = localStorage.getItem("token");
-
-//     // Check if token exists
-//     if (!token) {
-//       alert("Authentication token missing. Please log in again.");
-//       window.location.href = "/login";
-//       return;
-//     }
-
-//     try {
-//       // Send PUT request to resolve ticket
-//       const res = await fetch(
-//         `https://test-express-w958.onrender.com/api/tickets/${ticketId}/resolve`,
-//         {
-//           method: "PUT",
-//           headers: {
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-
-//       if (!res.ok) {
-//         throw new Error("Failed to resolve ticket");
-//       }
-
-//       // Update ticket status in state
-//       setTickets((prev) =>
-//         prev
-//           ? prev.map((t) =>
-//               t.id === ticketId ? { ...t, status: "resolved" } : t
-//             )
-//           : prev
-//       );
-//     } catch (err) {
-//       // Display error alert if resolution fails
-//       alert(
-//         "Error resolving ticket: " +
-//           (err instanceof Error ? err.message : "Unknown error")
-//       );
-//     }
-//   };
-
-//   const deleteTicket = async (ticketId: any) => {
-//     setDeleting(true);
-//     const token = localStorage.getItem("token"); // or however you store it
-
-//     const res = await fetch(
-//       `https://test-express-w958.onrender.com/api/tickets/${ticketId}`,
-//       {
-//         method: "DELETE",
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       }
-//     );
-
-//     if (res.ok) {
-//       console.log("Deleted");
-//       // Optionally: refresh ticket list or show a success message
-//     } else {
-//       console.error("Failed to delete ticket");
-//     }
-//   };
-
-//   const [adminCategory, setAdminCategory] = useState("");
-
-//   // Effect hook to fetch tickets on component mount
-//   useEffect(() => {
-//     // Retrieve authentication token and category from localStorage
-//     const token = localStorage.getItem("token");
-//     const category = localStorage.getItem("category");
-
-//     if (category) {
-//       setAdminCategory(category);
-//     }
-
-//     // Redirect to login if token or category is missing
-//     if (!token || !category) {
-//       window.location.href = "/login";
-//       return;
-//     }
-
-//     // Fetch tickets from API
-//     fetch("https://test-express-w958.onrender.com/api/tickets", {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     })
-//       .then((res) => {
-//         if (res.status === 401) {
-//           localStorage.removeItem("token");
-//           localStorage.removeItem("category");
-//           window.location.href = "/login"; // ⬅️ redirect to login
-//           throw new Error("Token expired or invalid");
-//         }
-
-//         if (!res.ok) throw new Error("Failed to fetch tickets");
-//         return res.json();
-//       })
-
-//       .then((data) => {
-//         // Ensure data is an array before setting state
-//         if (Array.isArray(data)) {
-//           setTickets(data);
-//           setError(null);
-//         } else {
-//           throw new Error("Invalid data format received from API");
-//         }
-//       })
-//       .catch((err) => {
-//         // Set error state and clear loading
-//         setError(err.message || "Failed to load tickets");
-//         setTickets([]);
-//       })
-//       .finally(() => {
-//         // Set loading to false after fetch completes
-//         setLoading(false);
-//       });
-//   }, []); // Empty dependency array ensures this runs once on mount
-
-//   // Render error state
-//   if (error) {
-//     return <p className="text-center text-red-500 font-montserrat">{error}</p>;
-//   }
-
-//   // Render loading state
-//   if (loading) {
-//     return (
-//       <div className="text-center text-gray-500 font-montserrat h-screen w-full flex justify-center items-center">
-//         <Loader2 className="animate-spin " />
-//       </div>
-//     );
-//   }
-
-//   // Render main dashboard content
-//   return (
-//     <div className="bg-black overflow-x-hidden font-montserrat relative min-h-screen">
-//       {/* Stars container with low z-index to stay behind content */}
-//       <div className="absolute inset-0 z-0 pointer-events-none">
-//         <div className="stars small"></div>
-//         <div className="stars medium"></div>
-//         <div className="stars small"></div>
-
-//         <div className="stars large"></div>
-//         <div className="stars small"></div>
-//       </div>
-//       <div className="container mx-auto p-6 max-w-4xl font-montserrat relative z-50">
-//         {/* Dashboard header */}
-//         <div className="flex justify-end gap-x-4 items-center">
-//           <Link
-//             target="_blank"
-//             href="/login"
-//             className="text-black flex text-sm py-1 rounded px-3 bg-white "
-//           >
-//             Switch Account
-//           </Link>
-//           <Link
-//             href="/submit"
-//             target="_blank"
-//             className="px-2 py-1 bg-slate-700 rounded text-white text-sm"
-//           >
-//             Submit a Ticket
-//           </Link>
-//         </div>
-//         <h1 className="text-3xl font-bold text-gray-300 mb-6">
-//           Tickets for {adminCategory}
-//         </h1>
-//         Conditional rendering for tickets
-//         {!tickets || tickets.length === 0 ? (
-//           <p className="text-gray-500 text-center">No tickets assigned yet.</p>
-//         ) : (
-//           <ul className="space-y-4">
-//             {tickets.map((ticket: Ticket) => (
-//               <li
-//                 key={ticket.id}
-//                 className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow"
-//               >
-//                 {/* Ticket details */}
-//                 <div className="space-y-2">
-//                   <p className="text-lg font-semibold text-gray-800">
-//                     <span className="text-gray-600">Title:</span> {ticket.title}
-//                   </p>
-//                   <p className="text-gray-700">
-//                     <span className="font-medium">Description:</span>{" "}
-//                     {ticket.description}
-//                   </p>
-//                   <div className="text-gray-700 flex  gap-x-3">
-//                     <span className="font-medium">Status:</span>{" "}
-//                     <span
-//                       className={`flex items-center px-2 py-1 rounded text-sm ${
-//                         ticket.status === "resolved"
-//                           ? "bg-gray-900 text-white"
-//                           : "bg-red-600 text-white"
-//                       }`}
-//                     >
-//                       {ticket.status}
-//                       {ticket.status === "resolved" ? (
-//                         <GiCheckMark className="text-md ml-1" />
-//                       ) : (
-//                         ""
-//                       )}
-//                     </span>
-//                     <div className="w-full justify-end flex items-center">
-//                       <MdDelete
-//                         className="text-2xl cursor-pointer"
-//                         onClick={() => deleteTicket(ticket.id)}
-//                       />
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 {/* Resolve button for unresolved tickets */}
-//                 {ticket.status !== "resolved" && (
-//                   <button
-//                     className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg flex justify-center  mx-auto hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-//                     onClick={() => handleResolve(ticket.id)}
-//                   >
-//                     Mark as Resolved
-//                   </button>
-//                 )}
-//               </li>
-//             ))}
-//           </ul>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -379,7 +119,7 @@ export default function Dashboard() {
       );
 
       if (res.ok) {
-        await fetchTickets(); // Refresh tickets after delete
+        await fetchTickets();
       } else {
         console.error("Failed to delete ticket");
       }
@@ -391,10 +131,13 @@ export default function Dashboard() {
   };
 
   if (error) {
-    return <p className="text-center text-red-500 font-montserrat">{error}</p>;
+    return (
+      <p className="text-center text-red-400 font-montserrat text-md py-10">
+        {error}
+      </p>
+    );
   }
 
-  // Converts backend values like "tech" → "Technical Support"
   const categoryLabelMap: { [key: string]: string } = {
     tech: "Technical Support",
     finance: "Finance",
@@ -404,95 +147,101 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="text-center text-gray-500 font-montserrat h-screen w-full flex justify-center items-center">
-        <Loader2 className="animate-spin" />
+      <div className="min-h-screen w-full flex justify-center items-center bg-gradient-to-b from-gray-900 to-black">
+        <Loader2 className="animate-spin text-blue-400 h-12 w-12" />
       </div>
     );
   }
 
   return (
-    <div className="bg-black overflow-x-hidden font-montserrat relative min-h-screen">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black font-montserrat relative overflow-x-hidden text-sm">
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="stars small"></div>
-        <div className="stars medium"></div>
-        <div className="stars large"></div>
+        <div className="stars small transition-all duration-500 "></div>
+        <div className="stars medium transition-all duration-500"></div>
+        <div className="stars large transition-all duration-500"></div>
       </div>
 
-      <div className="container mx-auto p-6 max-w-4xl relative z-50">
-        <div className="flex justify-end gap-x-4 items-center">
-          <Link
-            target="_blank"
-            href="/login"
-            className="text-black flex text-sm py-1 rounded px-3 bg-white"
-          >
-            Switch Account
-          </Link>
-          <Link
-            href="/submit"
-            target="_blank"
-            className="px-2 py-1 bg-slate-700 rounded text-white text-sm"
-          >
-            Submit a Ticket
-          </Link>
+      <div className="container mx-auto p-6 max-w-5xl relative z-10">
+        {/* Header Section */}
+        <div className="flex flex-col-reverse sm:flex-row justify-between items-center mb-8 ">
+          <h1 className="text-2xl font-bold text-white tracking-tight">
+            {categoryLabelMap[adminCategory] || adminCategory} Dashboard
+          </h1>
+          <div className="flex mb-10 sm:mb-0 flex-row gap-4 ">
+            <Link
+              href="/login"
+              className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 text-sm font-medium"
+            >
+              Switch Account
+            </Link>
+            <Link
+              href="/submit"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors duration-200 text-sm font-medium"
+            >
+              Submit a Ticket
+            </Link>
+          </div>
         </div>
 
-        <h1 className="text-3xl font-bold text-gray-300 mb-6">
-          Tickets for {categoryLabelMap[adminCategory] || adminCategory}
-        </h1>
-
+        {/* Tickets Section */}
         {!tickets || tickets.length === 0 ? (
-          <p className="text-gray-500 text-center">No tickets assigned yet.</p>
+          <div className="text-center text-gray-400 py-12">
+            <p className="text-sm">No tickets assigned yet.</p>
+            <Link
+              href="/submit"
+              className="mt-4 inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors duration-200 "
+            >
+              Create a New Ticket
+            </Link>
+          </div>
         ) : (
-          <ul className="space-y-4">
+          <ul className="space-y-6">
             {tickets.map((ticket) => (
               <li
                 key={ticket.id}
-                className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                className="p-6 bg-gray-800 bg-opacity-90 backdrop-blur-sm border border-gray-700 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
               >
-                <div className="space-y-2">
-                  <p className="text-lg font-semibold text-gray-800">
-                    <span className="text-gray-600">Title:</span> {ticket.title}
-                  </p>
-                  <p className="text-gray-700">
-                    <span className="font-medium">Description:</span>{" "}
-                    {ticket.description}
-                  </p>
-                  <div className="text-gray-700 flex gap-x-3 items-center">
-                    <span className="font-medium">Status:</span>
-                    <span
-                      className={`flex items-center px-2 py-1 rounded text-sm ${
-                        ticket.status === "resolved"
-                          ? "bg-gray-900 text-white"
-                          : "bg-red-600 text-white"
-                      }`}
-                    >
-                      {ticket.status}
-                      {ticket.status === "resolved" && (
-                        <GiCheckMark className="text-md ml-1" />
-                      )}
-                    </span>
-
-                    <div className="ml-auto flex items-center">
+                <div className="space-y-4">
+                  <div className="flex justify-between items-start">
+                    <h1 className="text-lg font-semibold text-white">
+                      {ticket.title}
+                    </h1>
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs ${
+                          ticket.status === "resolved"
+                            ? "bg-green-600 text-white"
+                            : "bg-red-600 text-white"
+                        }`}
+                      >
+                        {ticket.status.charAt(0).toUpperCase() +
+                          ticket.status.slice(1)}
+                        {ticket.status === "resolved" && (
+                          <GiCheckMark className="inline-block ml-1" />
+                        )}
+                      </span>
                       {deletingId === ticket.id ? (
-                        <Loader2 className="animate-spin text-xl" />
+                        <Loader2 className="animate-spin text-blue-400 h-6 w-6" />
                       ) : (
                         <MdDelete
-                          className="text-2xl cursor-pointer text-red-500 hover:text-red-700"
+                          className="text-2xl cursor-pointer text-red-400 hover:text-red-300 transition-colors duration-200"
                           onClick={() => deleteTicket(ticket.id)}
                         />
                       )}
                     </div>
                   </div>
+                  <p className="text-gray-300 leading-relaxed">
+                    {ticket.description}
+                  </p>
+                  {ticket.status !== "resolved" && (
+                    <button
+                      className="w-full max-w-[550px] mx-auto justify-center flex px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors duration-200 font-medium"
+                      onClick={() => handleResolve(ticket.id)}
+                    >
+                      Mark as Resolved
+                    </button>
+                  )}
                 </div>
-
-                {ticket.status !== "resolved" && (
-                  <button
-                    className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg flex justify-center mx-auto hover:bg-green-700"
-                    onClick={() => handleResolve(ticket.id)}
-                  >
-                    Mark as Resolved
-                  </button>
-                )}
               </li>
             ))}
           </ul>
